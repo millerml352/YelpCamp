@@ -1,6 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const Campground = require("../models/campground");
+const Comment = require("../models/comment");
 
 // Index
 router.get("/", (req, res) => {
@@ -76,12 +77,17 @@ router.put("/:id", (req, res) => {
 
 // Destroy
 router.delete("/:id", (req, res) => {
-	Campground.findByIdAndRemove(req.params.id, (err) => {
+	Campground.findByIdAndRemove(req.params.id, (err, removedCampground) => {
 		if (err) {
-			res.redirect("/campgrounds");
-		} else {
+			console.log(err);
 			res.redirect("/campgrounds");
 		}
+		Comment.deleteMany( {_id: { $in: removedCampground.comments } }, (err) => {
+			if (err) {
+				console.log(err);
+			}
+			res.redirect("/campgrounds");
+		})
 	});
 });
 
