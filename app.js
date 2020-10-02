@@ -26,7 +26,7 @@ app.use(bodyParser.urlencoded({extended: true}));
 app.set("view engine", "ejs");
 app.use(express.static(__dirname + "/public"));
 // Seed the DB with sample campgrounds on startup
-seedDB();
+// seedDB();
 
 // PASSPORT configuration
 app.use(require("express-session")({
