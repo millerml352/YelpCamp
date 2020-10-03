@@ -54,18 +54,14 @@ router.get("/:id", (req, res) => {
 });
 
 // Edit
-router.get("/:id/edit", (req, res) => {
+router.get("/:id/edit", checkOwnership, (req, res) => {
 	Campground.findById(req.params.id, (err, foundCampground) => {
-		if (err) {
-			res.redirect("/campgrounds");
-		} else {
-			res.render("./campgrounds/edit", {campground: foundCampground});
-		}
+		res.render("./campgrounds/edit", {campground: foundCampground});
 	});
 });
 
 // Update
-router.put("/:id", (req, res) => {
+router.put("/:id", checkOwnership, (req, res) => {
 	Campground.findByIdAndUpdate(req.params.id, req.body.campground, (err, updatedCampground) => {
 		if (err) {
 			res.redirect("/campgrounds");
@@ -76,7 +72,7 @@ router.put("/:id", (req, res) => {
 });
 
 // Destroy
-router.delete("/:id", (req, res) => {
+router.delete("/:id", checkOwnership, (req, res) => {
 	Campground.findByIdAndRemove(req.params.id, (err, removedCampground) => {
 		if (err) {
 			console.log(err);
@@ -91,12 +87,35 @@ router.delete("/:id", (req, res) => {
 	});
 });
 
-module.exports = router;
-
-// Middleware
+// Middleware - check if user is logged in
 function isLoggedIn(req,res,next){
 	if(req.isAuthenticated()){
 		return next();
 	}
 	res.redirect("/login");
 };
+
+// Middleware - check that user is owner of campground
+function checkOwnership(req, res, next) {
+	// Is user logged in?
+	if (req.isAuthenticated()) {
+		Campground.findById(req.params.id, (err, foundCampground) => {
+			if (err) {
+				res.redirect("back");
+			} else {
+			// Is user the owner of this campground?
+			// use .equals() method because foundCampground.author.id 
+			// is an object while req.user.id is a string
+				if (foundCampground.author.id.equals(req.user.id)) {
+					next();
+				} else {
+					res.redirect("back");
+				};
+			};
+		});
+	} else {
+		res.redirect("back");
+	};
+};
+
+module.exports = router;

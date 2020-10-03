@@ -11,11 +11,11 @@ const express 		= require("express"),
 	  seedDB 		= require("./seeds");
 
 // Requiring routes
-const commentRoutes = require("./routes/comments"),
-	campgroundRoutes = require("./routes/campgrounds"),
-	indexRoutes = require("./routes/index");
+const campgroundRoutes = require("./routes/campgrounds"),
+		 commentRoutes = require("./routes/comments"),
+		   indexRoutes = require("./routes/index");
 
-// Connect to the mongoDB yelp_camp
+// Connect to the mongoDB yelp_camp and error handler
 mongoose.connect("mongodb://localhost:27017/yelp_camp",{
 	useNewUrlParser: true,
 	useUnifiedTopology: true
@@ -34,14 +34,14 @@ app.use(methodOverride("_method"));
 app.use(require("express-session")({
 	// Any phrase
 	secret: "well you better go catch it",
-	// Two required lines
+	// Required
 	resave: false,
 	saveUninitialized: false
 }));
 
 app.use(passport.initialize());
 app.use(passport.session());
-// User.authenticate and serialize/deserialize methods are usable because of the plugin line in our user model
+// Built-in passport methods usable because of the plugin line in our user model
 passport.use(new LocalStrategy(User.authenticate()));
 passport.serializeUser(User.serializeUser());
 passport.deserializeUser(User.deserializeUser());
@@ -52,6 +52,7 @@ app.use(function(req,res,next){
 	next();
 });
 
+// Use route variables declared up top; allows routes to be shortened in respective files according to these prefixes
 app.use("/", indexRoutes);
 app.use("/campgrounds/:id/comments", commentRoutes);
 app.use("/campgrounds", campgroundRoutes);
@@ -60,5 +61,3 @@ app.use("/campgrounds", campgroundRoutes);
 app.listen(3000, () => {
 	console.log("Running on port 3000...");
 });
-
-
