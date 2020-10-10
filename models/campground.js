@@ -2,7 +2,8 @@ const mongoose = require("mongoose");
 
 // CAMPGROUND SCHEMA SETUP
 const campgroundSchema = new mongoose.Schema({
-	name: String,
+   name: String,
+   price: String,
 	image: String,
    description: String,
    author: {
