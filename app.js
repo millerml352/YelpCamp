@@ -48,9 +48,13 @@ passport.use(new LocalStrategy(User.authenticate()));
 passport.serializeUser(User.serializeUser());
 passport.deserializeUser(User.deserializeUser());
 
-// Middleware to provide currentUser to all routes
+// Middleware to provide variables to all routes
 app.use(function(req,res,next){
+	// passes currentUser to all
 	res.locals.currentUser = req.user;
+	// passes flash messages to all
+	res.locals.error = req.flash("error");
+	res.locals.success = req.flash("success");
 	next();
 });
 
