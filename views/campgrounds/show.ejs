@@ -18,6 +18,7 @@
 					<p>Submitted by <strong><%= campground.author.username %></strong></p>
 					<p><%= campground.description %></p>
 					<!-- currentUser is provided to all routes from middleware in app.js -->
+					<!-- hide edit and delete buttons unless logged in and owner -->
 					<% if (currentUser && campground.author.id.equals(currentUser._id)) {%>
 						<a class="btn btn-warning" href="/campgrounds/<%= campground._id %>/edit">Edit</a>
 						<form id="deleteForm" action="/campgrounds/<%= campground._id %>/?_method=DELETE" method="POST">
