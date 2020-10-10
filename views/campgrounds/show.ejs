@@ -21,7 +21,7 @@
 					<!-- hide edit and delete buttons unless logged in and owner -->
 					<% if (currentUser && campground.author.id.equals(currentUser._id)) {%>
 						<a class="btn btn-warning" href="/campgrounds/<%= campground._id %>/edit">Edit</a>
-						<form id="deleteForm" action="/campgrounds/<%= campground._id %>/?_method=DELETE" method="POST">
+						<form class="deleteForm" action="/campgrounds/<%= campground._id %>/?_method=DELETE" method="POST">
 							<button class="btn btn-danger">Delete</button>
 						</form>
 					<% } %>
@@ -36,12 +36,12 @@
 					<div class="row">
 						<div class="col-md-12">
 							<strong><%= comment.author.username %></strong>
-							<a class="btn btn-xs btn-warning" 
-							href="/campgrounds/<%= campground._id %>/comments/<%= comment._id %>/edit">
-							Edit</a>
 							<span class="pull-right">10 days ago</span>
 							<p><%= comment.text %></p>
-
+							<a class="btn btn-xs btn-warning" href="/campgrounds/<%= campground._id %>/comments/<%= comment._id %>/edit">Edit</a>
+							<form class="deleteForm" action="/campgrounds/<%= campground._id %>/comments/<%= comment._id %>?_method=DELETE" method=POST>
+								<input type="submit" class="btn btn-xs btn-danger" value="Delete">
+							</form>
 						</div>
 					</div>
 				<% }) %>
